@@ -31,10 +31,15 @@ public class RunConsoleGame {
 	 String message = "";
 	 while (true) {
 
-		System.out.print(theGame.toString());
 		if(!(message.equals(""))) {
+		System.out.print("\n"+theGame.toString());
 		  System.out.print(message);
 		}
+		else {
+		  System.out.print(theGame.toString());
+		  System.out.print(message);
+		}
+		
 		System.out.print("Move (n, e, s, w, arrow)?");
 
 		sc = new Scanner(System.in);
@@ -91,10 +96,12 @@ public class RunConsoleGame {
 		}
 
 		if(gameLogic.equals(wumpus)) {
+		  System.out.print(theGame.toString());
 		  System.out.print("\nYou walked into the Wumpus. You lose\n\n");
 		  break;
 		}
 		else if(gameLogic.equals(pit)) {
+		  System.out.print(theGame.toString());
 		  System.out.print("\nYou fell down a bottomless pit. You lose.\n\n");
 		  break;
 		}
@@ -108,7 +115,7 @@ public class RunConsoleGame {
 		  message = "I can hear the wind\n\n" + "I smell something foul\n\n";
 		}
 		else {
-		  System.out.print("\n");
+		  System.out.print("\n\n");
 		  message = "";
 		  continue;
 		}

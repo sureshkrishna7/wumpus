@@ -155,7 +155,9 @@ public class Map {
 			 result += " ";
 		  }
 		  else {
-			 result += " "+board[r][c]+" ";
+			 //To DEBUG 
+			 //result += " "+board[r][c]+" ";
+			 result += " " +'X'+" ";
 		  }
 		}
 		result += "\n";
