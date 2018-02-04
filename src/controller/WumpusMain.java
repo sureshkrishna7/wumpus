@@ -13,15 +13,16 @@ import javafx.stage.Stage;
 public class WumpusMain extends Application {
 
   public static void main(String[] args) {
-    launch(args);
+	 launch(args);
   }
 
+  
   @Override
   public void start(Stage stage) throws Exception {
-    BorderPane pane = new BorderPane();
+	 BorderPane pane = new BorderPane();
 
-    Scene scene = new Scene(pane, 690, 630);
-    stage.setScene(scene);
-    stage.show();
+	 Scene scene = new Scene(pane, 690, 630);
+	 stage.setScene(scene);
+	 stage.show();
   }
 }
