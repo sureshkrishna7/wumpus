@@ -6,7 +6,7 @@ public class HunterPlayer {
 
   private Map theGame;
   private Random rand;
-  final private char hun = 'O';
+  //final private char hun = 'O';
   private int[] position;
 
   public HunterPlayer(Map map){

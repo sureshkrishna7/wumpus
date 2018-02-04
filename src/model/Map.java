@@ -97,6 +97,7 @@ public class Map {
 	 return move;
   }
 
+  //method called whenever the hunter moves
   public char changeHunterPos(int newR, int newC) {
 	 setVisibility(newR, newC);
 	 return board[newR][newC];
@@ -136,10 +137,12 @@ public class Map {
 	 return false;
   }
 
+  //set the visibility of that cave
   public void setVisibility(int r, int c) {
 	 this.visible[r][c] = true;
   }
 
+  //prints the board as a string and checks for visibility of the caves when doing so
   @Override
   public String toString(){
 	 String result = "";
@@ -165,6 +168,9 @@ public class Map {
 	 return result;
   }
 
+  //whenever the hunter makes a move, either he walks in a direction or he shoots an arrow
+  //returns the character found in the area where he moves to
+  //also checks if the arrow shot, hit the wumpus or not
   public char hunterMove(int mo, int dir) {
 	 int[] jfk = new int[2];
 	 jfk = hunter.getHunterPosition();
@@ -197,23 +203,55 @@ public class Map {
 	 //hunter just shot an arrow
 	 else {
 		if(dir == 1) {
-		  sec = up(jfk[0], jfk[1]);
+		  sec = arrowFired(jfk[0], jfk[1], dir);
 		}
 		else if(dir == 2) {
-		  sec = down(jfk[0], jfk[1]);
+		  sec = arrowFired(jfk[0], jfk[1], dir);
 		}
 		else if(dir == 3) {
-		  sec = left(jfk[0], jfk[1]);
+		  sec = arrowFired(jfk[0], jfk[1], dir);
 		}
 		else {
-		  sec = right(jfk[0], jfk[1]);
+		  sec = arrowFired(jfk[0], jfk[1], dir);
 		}
 		return changeHunterPos(sec[0], sec[1]);
 	 }
   }
 
+  //wraparound arrow travelling in full speed
+  private int[] arrowFired(int row, int col, int dir) {
+	 int[] move = new int[2];
+	 
+	 //if the arrow was shot north or south
+	 if(dir == 1 || dir == 2) {
+		//col is fixed, just check if there is a wumpus in that col
+		if(col == prey.getWumpusCol()) {
+		  move[0] = prey.getWumpusRow();
+		  move[1] = prey.getWumpusCol();
+		}
+		else {
+		  move[0] = hunter.getHunterRow();
+		  move[1] = hunter.getHunterCol();
+		}
+	 }//if arrow shot in west or east
+	 else if(dir == 3 || dir == 4) {
+		//row is fixed. just check if there is a wumpus in that row
+		if(row == prey.getWumpusRow()) {
+		  move[0] = prey.getWumpusRow();
+		  move[1] = prey.getWumpusCol();
+		}
+		else {
+		  move[0] = hunter.getHunterRow();
+		  move[1] = hunter.getHunterCol();
+		}
+	 }
+	
+	 return move;
+  }
+
+  //when the game begins, set the hunter position at the correct non dangerous spot
   public boolean initialHunterPos(int r, int c) {
-	 // TODO Auto-generated method stub
+	 //checks if its an empty spot
 	 if(board[r][c] == 'X') {
 		return true;
 	 }

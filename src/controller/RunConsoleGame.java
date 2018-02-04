@@ -29,6 +29,8 @@ public class RunConsoleGame {
 	 String direction;
 	 String gameLogic = "";
 	 String message = "";
+	 
+	 //scanner the next direction and act accordingly
 	 while (true) {
 
 		if(!(message.equals(""))) {
@@ -59,10 +61,9 @@ public class RunConsoleGame {
 		  gameLogic = Character.toString(theGame.hunterMove(4, 0));
 		}//hunter shot an arrow
 		else if(direction.equals(arrow)) {
-		  message = "Shoot (n, e, s, w)?";
+		  System.out.print("Shoot (n, e, s, w)?");
 		  sc = new Scanner(System.in);
 		  direction = sc.next();
-
 		  //hunter shot an arrow north
 		  if(direction.equals(north)) {
 			 gameLogic = Character.toString(theGame.hunterMove(5, 1));
@@ -78,6 +79,7 @@ public class RunConsoleGame {
 		  }
 		  else {
 			 System.out.print("\n\n Try shooting n, e, s or w");
+			 continue;
 		  }
 
 		  System.out.print("\n\n");
