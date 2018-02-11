@@ -26,7 +26,7 @@ import model.Map;
 
 
 /**
- * This class . . . 
+ * This class ImageView
  * Author: Suresh Krishna Devendran
  */
 

@@ -3,7 +3,7 @@ package model;
 import java.util.Observable;
 
 /**
- * This class ...
+ * This class Map
  * Author: Suresh Krishna Devendran
  */
 public class Map extends Observable {

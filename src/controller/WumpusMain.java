@@ -1,7 +1,7 @@
 package controller;
 
 /**
- * This class . . .
+ * This class WumpusMain
  * Author: Suresh Krishna Devendran
  */
 

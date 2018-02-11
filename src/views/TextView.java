@@ -25,7 +25,7 @@ import model.HunterPlayer;
 import model.Map;
 
 /**
- * This class . . . 
+ * This class TextView
  * Author: Suresh Krishna Devendran
  */
 
