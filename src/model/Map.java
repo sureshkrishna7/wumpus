@@ -31,11 +31,7 @@ public class Map extends Observable {
 	 setChanged();
 	 notifyObservers();
   }
-
-  public HunterPlayer getHunterObject() {
-	 return this.hunter;
-  }
-
+  
   /**
    * Start a new game and tell all observers to draw an new game
    * with the string message startNewGame()
@@ -68,8 +64,19 @@ public class Map extends Observable {
 	 }
   }
 
+  //returns the hunter object
+  public HunterPlayer getHunterObject() {
+	 return this.hunter;
+  }
+  
+  //returns the entire game board
   public char[][] getMapBoard(){
 	 return this.board;
+  }
+  
+  //returns the entire visibility board
+  public boolean[][] getVisibleBoard() {
+	 return this.visible;
   }
 
   //return an array of two elements/ above the current provided position
@@ -133,10 +140,12 @@ public class Map extends Observable {
 	 return move;
   }
 
+  //set that the game ended
   public void gameEnded() {
 	 didGameEnd = true;
   }
 
+  //check if the game is still running, true if its running and false if it ended
   public boolean gameStillRunning() {
 	 return !(didGameEnd);
   }

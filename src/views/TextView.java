@@ -24,6 +24,11 @@ import javafx.scene.text.Font;
 import model.HunterPlayer;
 import model.Map;
 
+/**
+ * This class . . . 
+ * Author: Suresh Krishna Devendran
+ */
+
 
 public class TextView  extends BorderPane implements Observer {
 
@@ -42,20 +47,24 @@ public class TextView  extends BorderPane implements Observer {
   private Button east;
   private Button west;
 
+  //initializes the text view of the game
   public TextView(Map theGameMap, Scene scene) {
 	 theGame = theGameMap;
 	 hun = theGameMap.getHunterObject();
 	 bor = theGame.getMapBoard();
 	 sc = scene;
 
+	 //directions contain the N,S,E,W buttons
 	 directions = new GridPane();
 	 fields = new GridPane();
 
+	 //text message saying safe for now
 	 textMessage = new Label("Safe for now");
 	 GridPane.setMargin(textMessage, new Insets(0, 10, 10, 25));
 	 textMessage.setFont(new Font("Arial", 17));
 	 textMessage.setTextFill(Color.web("#008000"));
 
+	 //initalizing the textArea and making it uneditiable
 	 textBox = new TextArea();
 	 textBox.setEditable(false);
 
@@ -74,21 +83,21 @@ public class TextView  extends BorderPane implements Observer {
 	 textBox.setMaxHeight(340);
 	 GridPane.setMargin(textBox, new Insets(15, 20, 15, 25));
 	 textBox.setPadding(new Insets(0, 0, 0, 0));
-	 //this.setTop(textBox);
 
+	 //iniitalize the panel
 	 initializePanel();
   }
 
+  //initializing the text view panel
   private void initializePanel() {
-	 // TODO Auto-generated method stub
-	 /*Label label = new Label("TextAreaView");
-	 label.setFont(new Font("serif", 24));
-	 setCenter(label);
-	  */
+
+	 //add the textBox and the textMessage to a grid pane
 	 fields.add(textBox, 0, 0);
 	 fields.add(textMessage, 0, 1);
+	 //setting the gridpane as center
 	 this.setCenter(fields);
 
+	 //letting the gridpane column and row expand without constraints
 	 ColumnConstraints cc = new ColumnConstraints();
 	 cc.setHgrow(Priority.ALWAYS);
 	 fields.getColumnConstraints().add(cc);
@@ -96,27 +105,32 @@ public class TextView  extends BorderPane implements Observer {
 	 rc.setVgrow(Priority.ALWAYS);
 	 fields.getRowConstraints().add(rc);	 
 
+	 //adding all the buttonns to directions gridpane
 	 directions.add(north, 2, 2);
 	 directions.add(west, 1, 3);
 	 directions.add(east, 3, 3);
 	 directions.add(south, 2, 4);
 
-
+	 //setting the buttons on the buttom of the screen
 	 BorderPane.setAlignment(directions, Pos.BOTTOM_LEFT);
-	 BorderPane.setMargin(directions, new Insets(10, 10, 30, 220));
+	 BorderPane.setMargin(directions, new Insets(10, 10, 30, 230));
 	 this.setBottom(directions);
 
+	 //button listner for all the GUI buttons
 	 ButtonListener handler = new ButtonListener();
 	 north.setOnAction(handler);
 	 south.setOnAction(handler);
 	 west.setOnAction(handler);
 	 east.setOnAction(handler);
 
+	 //arrow key listener to move the hunter
 	 sc.setOnKeyReleased(new KeyListener());
 
+	 //calls this method that prints out the textArea board of the game as it progresses
 	 updateButtons();
   }
 
+  //listener to move the hunter
   private class KeyListener implements EventHandler<KeyEvent>  {
 
 	 @Override
@@ -144,7 +158,7 @@ public class TextView  extends BorderPane implements Observer {
   }
 
 
-
+  //button listener to shoot the arrow in the specified direction
   private class ButtonListener implements EventHandler<ActionEvent> {
 
 	 @Override
@@ -169,16 +183,20 @@ public class TextView  extends BorderPane implements Observer {
 			 temp = theGame.hunterMove(5, 4);
 		  }
 
+		  //if your arrow hit the wumpus then you win
 		  if(temp == 'W') {
 			 textMessage.setText("Your arrow hit the wumpus. You win.");
 			 textMessage.setTextFill(Color.web("#ffcc00"));
 			 updateLastResult();
+			 //notify the game ended
 			 theGame.gameEnded();
 		  }
 		  else {
+			 //if your arrow didn't hit the wumpus then you lose 
 			 textMessage.setText("You just shot yourself. You lose.");
 			 textMessage.setTextFill(Color.web("#e60000"));
 			 updateLastResult();
+			 //notify the game ended
 			 theGame.gameEnded();
 		  }
 		}
@@ -186,11 +204,16 @@ public class TextView  extends BorderPane implements Observer {
 
   }
 
+  //method called when the game is processing all the time
   @Override
   public void update(Observable observable, Object arg) {
 	 // TODO Auto-generated method stub
 	 theGame = (Map) observable;
+	 
+	 //prints out the char[][] gameboard as a string
 	 updateButtons();
+	 
+	 //prints the appropriate message for the text message label below the text area
 	 if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'B')
 		textMessage.setText("I smell something foul");
 	 else if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'S')
@@ -201,21 +224,25 @@ public class TextView  extends BorderPane implements Observer {
 		textMessage.setText("You fell down a bottomless pit. You lose.");
 		textMessage.setTextFill(Color.web("#e60000"));
 		updateLastResult();
+		//if the game ended , print the board for one last time and notify the game ended
 		theGame.gameEnded();
 	 }
 	 else if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'W') {
 		textMessage.setText("You walked into the Wumpus. You lose");
 		textMessage.setTextFill(Color.web("#e60000"));
 		updateLastResult();
+		//if the game ended , print the board for one last time and notify the game ended
 		theGame.gameEnded();
 	 }
 	 else {
+		//else when there is no danger print just safe now
 		textMessage.setTextFill(Color.web("#008000"));
 		textMessage.setText("Safe for now");
 	 }
 
   }
 
+  //update the string in the textarea box
   private void updateButtons() {
 	 // TODO Auto-generated method stub
 	 textString = new String();
@@ -223,10 +250,11 @@ public class TextView  extends BorderPane implements Observer {
 	 textBox.setText(textString);
   }
 
+  //update the string in the text area for one last time
   private void updateLastResult() {
 	 textString = new String();
 	 textString = theGame.toEndGameString();
 	 textBox.setText(textString);
   }
-  
+
 }
