@@ -1,19 +1,23 @@
 package model;
 
+import java.util.Observable;
+
 /**
  * This class ...
  * Author: Suresh Krishna Devendran
  */
-public class Map {
+public class Map extends Observable {
   private char[][] board;
   private boolean[][] visible;
   private int size;
   private Wumpus prey;
   private HunterPlayer hunter;
   private Traps pit;
+  private boolean didGameEnd;
 
   //the map of the game
   public Map() {
+	 didGameEnd = false;
 	 size = 12;
 	 board = new char[size][size];
 	 visible = new boolean[size][size];
@@ -24,7 +28,35 @@ public class Map {
 	 pit.setPosition();
 	 hunter = new HunterPlayer(this);
 	 hunter.setPosition();
+	 setChanged();
+	 notifyObservers();
   }
+
+  public HunterPlayer getHunterObject() {
+	 return this.hunter;
+  }
+
+  /**
+   * Start a new game and tell all observers to draw an new game
+   * with the string message startNewGame()
+   */
+  public void startNewGame() {
+	 didGameEnd = false;
+	 size = 12;
+	 //board = new char[size][size];
+	 //visible = new boolean[size][size];
+	 initializeBoard();
+	 //prey = new Wumpus(this);
+	 prey.setPosition();
+	 //pit = new Traps(this);
+	 pit.setPosition();
+	 //hunter = new HunterPlayer(this);
+	 hunter.setPosition();
+	 // The state of this model just changed so tell any observer to update themselves
+	 setChanged();
+	 notifyObservers("startNewGame()");
+  }
+
 
   //initialize the board with X's
   private void initializeBoard() {
@@ -34,6 +66,10 @@ public class Map {
 		  visible[r][c] = false;
 		}
 	 }
+  }
+
+  public char[][] getMapBoard(){
+	 return this.board;
   }
 
   //return an array of two elements/ above the current provided position
@@ -95,6 +131,14 @@ public class Map {
 		move[1] = col + 1;
 	 }
 	 return move;
+  }
+
+  public void gameEnded() {
+	 didGameEnd = true;
+  }
+
+  public boolean gameStillRunning() {
+	 return !(didGameEnd);
   }
 
   //method called whenever the hunter moves
@@ -168,6 +212,33 @@ public class Map {
 	 return result;
   }
 
+  public String toEndGameString(){
+	 String result = "";
+	 for (int r = 0; r < size; r++) {
+		for (int c = 0; c < size; c++) {
+		  if(hunter.getHunterRow() == r && hunter.getHunterCol() == c) {
+			 result += " "+"O"+" ";
+			 continue;
+		  }
+		  if(visible[r][c]) {
+			 result += " ";
+			 result += (board[r][c] == 'X') ? ' ' : board[r][c];
+			 result += " ";
+		  }
+		  else {
+			 result += " ";
+			 result += (board[r][c] == 'X') ? '_' : board[r][c];
+			 result += " ";
+		  }
+
+		}
+		result += "\n";
+	 }
+	 return result;
+  }
+
+
+
   //whenever the hunter makes a move, either he walks in a direction or he shoots an arrow
   //returns the character found in the area where he moves to
   //also checks if the arrow shot, hit the wumpus or not
@@ -180,24 +251,32 @@ public class Map {
 	 if(mo == 1) {
 		sec = up(jfk[0], jfk[1]);
 		hunter.move(sec[0], sec[1]);
+		setChanged();
+		notifyObservers();
 		return changeHunterPos(sec[0], sec[1]);
 	 }
 	 //move hunter south
 	 else if(mo == 2) {
 		sec = down(jfk[0], jfk[1]);
 		hunter.move(sec[0], sec[1]);
+		setChanged();
+		notifyObservers();
 		return changeHunterPos(sec[0], sec[1]);
 	 }
 	 //move hunter west
 	 else if(mo == 3) {
 		sec = left(jfk[0], jfk[1]);
 		hunter.move(sec[0], sec[1]);
+		setChanged();
+		notifyObservers();
 		return changeHunterPos(sec[0], sec[1]);
 	 }
 	 //move hunter east
 	 else if(mo == 4) {
 		sec = right(jfk[0], jfk[1]);
 		hunter.move(sec[0], sec[1]);
+		setChanged();
+		notifyObservers();
 		return changeHunterPos(sec[0], sec[1]);
 	 }
 	 //hunter just shot an arrow
@@ -214,6 +293,8 @@ public class Map {
 		else {
 		  sec = arrowFired(jfk[0], jfk[1], dir);
 		}
+		setChanged();
+		notifyObservers();
 		return changeHunterPos(sec[0], sec[1]);
 	 }
   }
@@ -221,7 +302,7 @@ public class Map {
   //wraparound arrow travelling in full speed
   private int[] arrowFired(int row, int col, int dir) {
 	 int[] move = new int[2];
-	 
+
 	 //if the arrow was shot north or south
 	 if(dir == 1 || dir == 2) {
 		//col is fixed, just check if there is a wumpus in that col
@@ -245,7 +326,7 @@ public class Map {
 		  move[1] = hunter.getHunterCol();
 		}
 	 }
-	
+
 	 return move;
   }
 
