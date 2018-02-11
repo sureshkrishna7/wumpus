@@ -32,20 +32,21 @@ import model.Map;
 
 public class TextView  extends BorderPane implements Observer {
 
-  private Map theGame;
+  private static Map theGame;
   private HunterPlayer hun;
   private char[][] bor;
 
-  private TextArea textBox;
-  private String textString;
+  private static TextArea textBox;
+  private static String textString;
   private Scene sc;
   private GridPane fields;
   private GridPane directions;
-  private Label textMessage;
+  public static Label textMessage;
   private Button north;
   private Button south;
   private Button east;
   private Button west;
+  private char temp;
 
   //initializes the text view of the game
   public TextView(Map theGameMap, Scene scene) {
@@ -116,15 +117,15 @@ public class TextView  extends BorderPane implements Observer {
 	 BorderPane.setMargin(directions, new Insets(10, 10, 30, 230));
 	 this.setBottom(directions);
 
+	 //arrow key listener to move the hunter
+	 sc.setOnKeyReleased(new KeyListener());
+
 	 //button listner for all the GUI buttons
 	 ButtonListener handler = new ButtonListener();
 	 north.setOnAction(handler);
 	 south.setOnAction(handler);
 	 west.setOnAction(handler);
 	 east.setOnAction(handler);
-
-	 //arrow key listener to move the hunter
-	 sc.setOnKeyReleased(new KeyListener());
 
 	 //calls this method that prints out the textArea board of the game as it progresses
 	 updateButtons();
@@ -164,7 +165,7 @@ public class TextView  extends BorderPane implements Observer {
 	 @Override
 	 public void handle(ActionEvent event) {
 		String text = ((Button) event.getSource()).getText();
-		char temp = 'C';
+		temp = 'C';
 		if(theGame.gameStillRunning()) {
 		  if(text.equals("N")) {
 			 //System.out.println("Nor");
@@ -182,14 +183,13 @@ public class TextView  extends BorderPane implements Observer {
 			 //System.out.println("Eas");
 			 temp = theGame.hunterMove(5, 4);
 		  }
-
 		  //if your arrow hit the wumpus then you win
 		  if(temp == 'W') {
 			 textMessage.setText("Your arrow hit the wumpus. You win.");
 			 textMessage.setTextFill(Color.web("#ffcc00"));
 			 updateLastResult();
 			 //notify the game ended
-			 theGame.gameEnded();
+			 theGame.gameEnded(0);
 		  }
 		  else {
 			 //if your arrow didn't hit the wumpus then you lose 
@@ -197,11 +197,10 @@ public class TextView  extends BorderPane implements Observer {
 			 textMessage.setTextFill(Color.web("#e60000"));
 			 updateLastResult();
 			 //notify the game ended
-			 theGame.gameEnded();
+			 theGame.gameEnded(1);
 		  }
 		}
 	 }
-
   }
 
   //method called when the game is processing all the time
@@ -209,10 +208,15 @@ public class TextView  extends BorderPane implements Observer {
   public void update(Observable observable, Object arg) {
 	 // TODO Auto-generated method stub
 	 theGame = (Map) observable;
-	 
+
 	 //prints out the char[][] gameboard as a string
-	 updateButtons();
-	 
+	 if(theGame.gameStillRunning()) {
+		updateButtons();
+	 }
+	 else {
+		updateLastResult();
+	 }
+
 	 //prints the appropriate message for the text message label below the text area
 	 if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'B')
 		textMessage.setText("I smell something foul");
@@ -225,14 +229,14 @@ public class TextView  extends BorderPane implements Observer {
 		textMessage.setTextFill(Color.web("#e60000"));
 		updateLastResult();
 		//if the game ended , print the board for one last time and notify the game ended
-		theGame.gameEnded();
+		theGame.gameEnded(2);
 	 }
 	 else if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'W') {
 		textMessage.setText("You walked into the Wumpus. You lose");
 		textMessage.setTextFill(Color.web("#e60000"));
 		updateLastResult();
 		//if the game ended , print the board for one last time and notify the game ended
-		theGame.gameEnded();
+		theGame.gameEnded(3);
 	 }
 	 else {
 		//else when there is no danger print just safe now
@@ -245,13 +249,16 @@ public class TextView  extends BorderPane implements Observer {
   //update the string in the textarea box
   private void updateButtons() {
 	 // TODO Auto-generated method stub
-	 textString = new String();
-	 textString = theGame.toString();
-	 textBox.setText(textString);
+	 //while the game is still running
+	 if(theGame.gameStillRunning()) {
+		textString = new String();
+		textString = theGame.toString();
+		textBox.setText(textString);
+	 }
   }
 
   //update the string in the text area for one last time
-  private void updateLastResult() {
+  public static void updateLastResult() {
 	 textString = new String();
 	 textString = theGame.toEndGameString();
 	 textBox.setText(textString);

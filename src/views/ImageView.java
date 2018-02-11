@@ -33,14 +33,14 @@ import model.Map;
 public class ImageView extends BorderPane implements Observer {
 
   private Map theGame;
-  private char[][] bor;
-  private boolean[][] vis;
-  private HunterPlayer hun;
+  private static char[][] bor;
+  private static boolean[][] vis;
+  private static HunterPlayer hun;
   private Scene sc;
-  private Stage st;
+  private static Stage st;
 
-  private Canvas canvas;
-  private GraphicsContext gc;
+  private static Canvas canvas;
+  private static GraphicsContext gc;
   //private int scrx;
   //private int scry;
 
@@ -83,7 +83,12 @@ public class ImageView extends BorderPane implements Observer {
 	 west = new Button("W");
 	 //west.setText("W");
 
-	 initializePanel();  }
+	 initializePanel();  
+  }
+  
+  public static Stage getStage() {
+	 return st;
+  }
 
   private void initializePanel() {
 
@@ -174,7 +179,7 @@ public class ImageView extends BorderPane implements Observer {
    */
 
   //inital board with one location for the hunter
-  private void drawBoard() {
+  private static void drawBoard() {
 	 Image grnd = new Image("file:images/Ground.png", 40, 40, false, false);
 	 for (int r = 0; r < 12; r++) {
 		for (int c = 0; c < 12; c++) {
@@ -213,12 +218,12 @@ public class ImageView extends BorderPane implements Observer {
 		  if(temp == 'W') {
 			 st.setTitle("Your arrow hit the wumpus. You win.");
 			 updateLast();
-			 theGame.gameEnded();
+			 theGame.gameEnded(0);
 		  }
 		  else {
 			 st.setTitle("You just shot yourself. You lose.");
 			 updateLast();
-			 theGame.gameEnded();
+			 theGame.gameEnded(1);
 		  }
 		}
 	 }
@@ -226,7 +231,7 @@ public class ImageView extends BorderPane implements Observer {
   }
 
   //Update the board for the LAST time showing all the hazards and warnings
-  private void updateLast() {
+  public static void updateLast() {
 
 	 //clear the canvas
 	 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -407,7 +412,7 @@ public class ImageView extends BorderPane implements Observer {
   public void update(Observable observable, Object arg) {
 	 // TODO Auto-generated method stub
 	 theGame = (Map) observable;
-	 
+
 	 //while the game is still running update the board
 	 if(theGame.gameStillRunning()) {
 		updateButtons();
@@ -416,7 +421,7 @@ public class ImageView extends BorderPane implements Observer {
 		//once the game is done, run updateLast to print all the hazards and warning
 		updateLast();
 	 }
-	 
+
 	 //change the title of the stage appropriately
 	 if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'B')
 		st.setTitle("I smell something foul");
@@ -428,13 +433,13 @@ public class ImageView extends BorderPane implements Observer {
 		//if you lost, report that the game is ended and print the last board
 		st.setTitle("You fell down a bottomless pit. You lose.");
 		updateLast();
-		theGame.gameEnded();
+		theGame.gameEnded(2);
 	 }
 	 else if (bor[hun.getHunterRow()][hun.getHunterCol()] == 'W') {
 		//if you lost, report that the game is ended and print the last board
 		st.setTitle("You walked into the Wumpus. You lose");
 		updateLast();
-		theGame.gameEnded();
+		theGame.gameEnded(3);
 	 }
 	 else {
 		//otherwise set the title to hunt the wumpus

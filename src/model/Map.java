@@ -2,6 +2,9 @@ package model;
 
 import java.util.Observable;
 
+import javafx.scene.paint.Color;
+
+
 /**
  * This class Map
  * Author: Suresh Krishna Devendran
@@ -31,7 +34,7 @@ public class Map extends Observable {
 	 setChanged();
 	 notifyObservers();
   }
-  
+
   /**
    * Start a new game and tell all observers to draw an new game
    * with the string message startNewGame()
@@ -68,12 +71,12 @@ public class Map extends Observable {
   public HunterPlayer getHunterObject() {
 	 return this.hunter;
   }
-  
+
   //returns the entire game board
   public char[][] getMapBoard(){
 	 return this.board;
   }
-  
+
   //returns the entire visibility board
   public boolean[][] getVisibleBoard() {
 	 return this.visible;
@@ -141,7 +144,23 @@ public class Map extends Observable {
   }
 
   //set that the game ended
-  public void gameEnded() {
+  public void gameEnded(int i) {
+	 if(i == 0) {
+		views.TextView.textMessage.setText("Your arrow hit the wumpus. You win.");
+		views.TextView.textMessage.setTextFill(Color.web("#ffcc00"));
+		views.TextView.updateLastResult();
+		
+		views.ImageView.getStage().setTitle("Your arrow hit the wumpus. You win.");
+		views.ImageView.updateLast();
+	 }
+	 else if(i == 1) {
+		views.TextView.textMessage.setText("You just shot yourself. You lose.");
+		views.TextView.textMessage.setTextFill(Color.web("#e60000"));
+		views.TextView.updateLastResult();
+		
+		views.ImageView.getStage().setTitle("You just shot yourself. You lose.");
+		views.ImageView.updateLast();
+	 }
 	 didGameEnd = true;
   }
 
